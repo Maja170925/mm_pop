@@ -60,9 +60,70 @@ def gui_main():
                 })
                 refresh_list()
 
+        def remove():
+            idx = listbox.curselection()
+            if not idx:
+                messagebox.showwarning("Uwaga", "Nie zaznaczono elementu do usunięcia.")
+                return
+            dataset.pop(idx[0])
+            refresh_list()
+
+        def update():
+            idx = listbox.curselection()
+            if not idx:
+                messagebox.showwarning("Uwaga", "Nie zaznaczono elementu do edycji.")
+                return
+
+            current = dataset[idx[0]]
+            new_name = simpledialog.askstring("Nowa nazwa", "Nowa nazwa:", initialvalue=current["name"])
+            new_location = simpledialog.askstring("Nowa lokalizacja", "Nowa lokalizacja:",
+                                                  initialvalue=current["location"])
+
+            if not new_name or not new_location:
+                messagebox.showwarning("Błąd", "Musisz podać nazwę i lokalizację.")
+                return
+
+            if type_ in ["clients", "employees"]:
+                toll_booth_names = [s["name"] for s in toll_booth]
+
+                toll_booth_window = tk.Toplevel(window)
+                toll_booth_window.title("Wybierz nowy punkt poboru opłat")
+
+                tk.Label(toll_booth_window, text="Wybierz nowy punkt poboru opłat:").pack(pady=5)
+                selected_toll_booth = tk.StringVar()
+                selected_toll_booth.set(current.get("toll_booth", toll_booth_names[0]))
+
+                tk.OptionMenu(toll_booth_window, selected_toll_booth, *toll_booth_names).pack(pady=5)
+
+                def confirm_update():
+                    dataset[idx[0]] = {
+                        "name": new_name,
+                        "location": new_location,
+                        "toll_booth": selected_toll_booth.get()
+                    }
+                    toll_booth_window.destroy()
+                    refresh_list()
+
+                tk.Button(toll_booth_window, text="Zatwierdź", command=confirm_update).pack(pady=10)
+            else:
+                dataset[idx[0]] = {
+                    "name": new_name,
+                    "location": new_location
+                }
+                refresh_list()
+
+        btn_frame = tk.Frame(window)
+        btn_frame.pack(pady=5)
+
+        tk.Button(btn_frame, text="Dodaj", command=add, width=12).grid(row=0, column=0, padx=5)
+        tk.Button(btn_frame, text="Usuń", command=remove, width=12).grid(row=0, column=1, padx=5)
+        tk.Button(btn_frame, text="Aktualizuj", command=update, width=12).grid(row=0, column=2, padx=5)
+
+        refresh_list()
 
 root = tk.Tk()
 root.title("System zarządzania punktami poboru opłat")
+
 
 
 
