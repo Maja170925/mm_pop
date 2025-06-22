@@ -129,8 +129,23 @@ def gui_main():
         listbox.pack(padx=10, pady=10)
 
         refresh_list()
+    def map_clients_of_toll_booth():
+        name = simpledialog.askstring("Punkt poboru opłat", "Podaj nazwę punktu poboru opłat:")
+        filtered = [c for c in clients if c['toll_booth'] == name]
+        if not filtered:
+            messagebox.showinfo("Brak danych", "Brak klientów dla tego punktu poboru opłat.")
+            return
+        get_grouped_map(filtered, "clients_of_toll_booth.html")
+        open_map("clients_of_toll_booth.html")
 
-
+    def map_employees_of_toll_booth():
+            name = simpledialog.askstring("Punkt poboru opłat", "Podaj nazwę Punktu poboru opłat:")
+            filtered = [e for e in employees if e['toll_booth'] == name]
+            if not filtered:
+                messagebox.showinfo("Brak danych", "Brak pracowników dla tego punktu poboru opłat.")
+                return
+            get_grouped_map(filtered, "employees_of_toll_booth.html")
+            open_map("employees_of_toll_booth.html")
 
     root = tk.Tk()
     root.title("System zarządzania siecią badawczą")
