@@ -1,4 +1,3 @@
-# Główna aplikacja GUI
 import tkinter as tk
 from tkinter import simpledialog , messagebox
 from utils.controller import get_grouped_map
@@ -14,12 +13,65 @@ def gui_main():
         window = tk.Toplevel(root)
         window.title(title)
 
-    root = tk.Tk()
-    root.title("System zarządzania punktami poboru opłat")
+        listbox = tk.Listbox(window, width=60, height=15)
+        listbox.pack(padx=10, pady=10)
 
-    tk.Button(root, text="Punkt poboru opłat", command=lambda: make_menu("Punkt poboru opłat", toll_booth, "toll_booth")).pack(pady=10)
-    tk.Button(root, text="Pracownicy", command=lambda: make_menu("Pracownicy", employees, "employees")).pack(pady=10)
-    tk.Button(root, text="Klienci", command=lambda: make_menu("Klienci", clients, "clients")).pack(pady=10)
+        def refresh_list():
+            listbox.delete(0, tk.END)
+            for item in dataset:
+                toll_booth_info = f"       {item['toll_booth']}" if "toll_booth" in item else ""
+                listbox.insert(tk.END, f"{item['name']}       {item['location']}{toll_booth_info}")
 
-    tk.Button(root, text="Zamknij", command=root.destroy).pack(pady=20)
-    root.mainloop()
+        def add():
+            name = simpledialog.askstring("Dodaj", "Podaj nazwę:")
+            location = simpledialog.askstring("Dodaj", "Podaj lokalizację:")
+
+            if not name or not location:
+                messagebox.showwarning("Błąd", "Musisz podać nazwę i lokalizację.")
+                return
+
+            if type_ in ["clients", "employees"]:
+                toll_booth_names = [s["name"] for s in toll_booth]
+
+                toll_booth_window = tk.Toplevel(window)
+                toll_booth_window.title("Wybierz punkt poboru opłat")
+
+                tk.Label(toll_booth_window, text="Wybierz punkt poboru opłat dla tej osoby:").pack(pady=5)
+                selected_toll_booth = tk.StringVar()
+                selected_toll_booth.set(toll_booth_names[0])
+
+                tk.OptionMenu(toll_booth_window, selected_toll_booth, *toll_booth_names).pack(pady=5)
+
+                def confirm_toll_booth():
+                    booth = selected_toll_booth.get()
+                    dataset.append({
+                        "name": name,
+                        "location": location,
+                        "toll_booth": booth
+                    })
+                    toll_booth_window.destroy()
+                    refresh_list()
+
+                tk.Button(toll_booth_window, text="Zatwierdź", command=confirm_toll_booth).pack(pady=10)
+            else:
+                dataset.append({
+                    "name": name,
+                    "location": location
+                })
+                refresh_list()
+
+
+root = tk.Tk()
+root.title("System zarządzania punktami poboru opłat")
+
+
+
+
+
+
+
+
+
+
+
+
