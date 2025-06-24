@@ -13,8 +13,6 @@ def gui_main():
         window = tk.Toplevel(root)
         window.title(title)
 
-        listbox = tk.Listbox(window, width=60, height=15)
-        listbox.pack(padx=10, pady=10)
 
         def refresh_list():
             listbox.delete(0, tk.END)
@@ -129,6 +127,7 @@ def gui_main():
         listbox.pack(padx=10, pady=10)
 
         refresh_list()
+
     def map_clients_of_toll_booth():
         name = simpledialog.askstring("Punkt poboru opłat", "Podaj nazwę punktu poboru opłat:")
         filtered = [c for c in clients if c['toll_booth'] == name]
@@ -148,8 +147,21 @@ def gui_main():
             open_map("employees_of_toll_booth.html")
 
     root = tk.Tk()
-    root.title("System zarządzania siecią badawczą")
+    root.title("System zarządzania sicią punktów poboru opłat")
 
+    tk.Button(root, text="Punkt poboru opłat", command=lambda: make_menu("Punkt poboru opłat", toll_booth, "toll_booth")).pack(pady=10)
+    tk.Button(root, text="Pracownicy", command=lambda: make_menu("Pracownicy", employees, "employees")).pack(pady=10)
+    tk.Button(root, text="Klienci", command=lambda: make_menu("Klienci", clients, "clients")).pack(pady=10)
+
+    tk.Button(root, text="Mapa klientów wybranego punktu poboru opłat", command=map_clients_of_toll_booth).pack(pady=10)
+    tk.Button(root, text="Mapa pracowników wybranego punktu poboru opłat", command=map_employees_of_toll_booth).pack(pady=10)
+
+    tk.Button(root, text="Zamknij", command=root.destroy).pack(pady=20)
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    gui_main()
 
 
 
