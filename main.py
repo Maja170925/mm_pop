@@ -147,7 +147,7 @@ def gui_main():
             open_map("employees_of_toll_booth.html")
 
     root = tk.Tk()
-    root.title("System zarządzania siecią badawczą")
+    root.title("System zarządzania sicią punktów poboru opłat")
 
     tk.Button(root, text="Punkt poboru opłat", command=lambda: make_menu("Punkt poboru opłat", toll_booth, "toll_booth")).pack(pady=10)
     tk.Button(root, text="Pracownicy", command=lambda: make_menu("Pracownicy", employees, "employees")).pack(pady=10)
